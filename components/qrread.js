@@ -1,25 +1,29 @@
-import React from 'react';
-import { useQRCode } from 'react-hook-qrcode';
-import { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import firebase from "firebase";
 import "firebase/storage";
 import QRCode from "qrcode.react";
 
 const Sample = () => {
-  let Result = "a";
+  const [value, setValue] = useState("");
 
-  async function getFireData(){
+  async function getFireData() {
     const db = firebase.firestore();
-    const doc = await db.collection('users').doc('001').get();
-    Result = JSON.stringify(doc.data());
+    const doc = await db.collection("users").doc("001").get();
+    const result = JSON.stringify(doc.data());
+    setValue(result);
   }
 
+  useEffect(() => {
+    getFireData();
+  }, []);
+
   return (
-    <div className = "Sample">
-      <QRCode value= {Result} />
+    <div className="Sample">
+      {value ? <QRCode value={value} /> : "...loading"}
     </div>
   );
-}
+};
+
 export default Sample;
 
 // const db = firebase.firestore();
